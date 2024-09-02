@@ -1,0 +1,26 @@
+---
+version: '3.7'
+
+services:
+
+  titiler:
+    image: titiler:latest
+    container_name: titiler
+    restart: 'no'
+    labels:
+      - traefik.enabled=true
+      - traefik.http.routers.titiler.rule=Host(`titiler.structx.io`)
+      - traefik.http.routers.titiler.entrypoints=websecure
+    ports:
+      - 8000
+    neworks:
+      - ingress
+      - public
+
+networks:
+  ingress:
+    name: pivot-ingress
+    external: true
+  public:
+    name: pivot-public-network
+    external: true
