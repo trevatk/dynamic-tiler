@@ -13,6 +13,9 @@ services:
       - traefik.http.routers.titiler.entrypoints=websecure
     ports:
       - 8000
+    environment:
+      - SECURITY_USERNAME=changeme
+      - SECURITY_PASSWORD=changeme
     neworks:
       - ingress
       - public
