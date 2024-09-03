@@ -9,11 +9,12 @@ from titiler.extensions import wmsExtension
 from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 
 from src.dependencies import DatasetPathParams
+from src.extensions import wmsExtension as authenticatedWmsExtension
 
 app = FastAPI()
 
 protected_router = TilerFactory(path_dependency=DatasetPathParams, extensions=[
-    wmsExtension()
+    authenticatedWmsExtension()
 ])
 
 unprotected_router = TilerFactory(extensions=[

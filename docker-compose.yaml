@@ -19,7 +19,6 @@ services:
       - traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true
       - traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://*,https://*
       - traefik.http.middlewares.cors.headers.accesscontrolmaxage=100
-      - traefik.http.middlewares.cors.headers.addvaryheader=true
     ports:
       - 8000
     environment:
@@ -39,7 +38,7 @@ services:
       - PYTHONWARNINGS=ignore
       - VSI_CACHE=TRUE
       - VSI_CACHE_SIZE=536870912
-    neworks:
+    networks:
       - ingress
       - public
 
