@@ -2,6 +2,7 @@
 import uvicorn
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from titiler.core.factory import TilerFactory
 from titiler.extensions import wmsExtension
@@ -28,4 +29,15 @@ add_exception_handlers(app, DEFAULT_STATUS_CODES)
 def ping():
     return {"ping": "pong"}
 
+origins = [
+    "http://*",
+    "https://*"
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
