@@ -12,19 +12,6 @@ from src.dependencies import DatasetPathParams
 
 app = FastAPI()
 
-origins = [
-    "http://*",
-    "https://*"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 protected_router = TilerFactory(path_dependency=DatasetPathParams, extensions=[
     wmsExtension()
 ])
