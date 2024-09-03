@@ -8,14 +8,37 @@ services:
     container_name: titiler
     restart: 'no'
     labels:
-      - traefik.enabled=true
+      - traefik.enable=true
       - traefik.http.routers.titiler.rule=Host(`titiler.structx.io`)
       - traefik.http.routers.titiler.entrypoints=websecure
+      - traefik.http.services.titiler.loadbalancer.server.port=8000
+      - traefik.http.routers.titiler.tls=true
+      - traefik.http.routers.titiler.tls.certresolver=cloudflareResolver 
+      - traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*
+      - traefik.http.middlewares.cors.headers.accesscontrolallowheaders=*
+      - traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true
+      - traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://*,https://*
+      - traefik.http.middlewares.cors.headers.accesscontrolmaxage=100
+      - traefik.http.middlewares.cors.headers.addvaryheader=true
     ports:
       - 8000
     environment:
       - SECURITY_USERNAME=changeme
       - SECURITY_PASSWORD=changeme
+      # Uvicorn
+      # http://www.uvicorn.org/settings/#production
+      #- WEB_CONCURRENCY=1
+      # GDAL config
+      - CPL_TMPDIR=/tmp
+      - GDAL_CACHEMAX=75%
+      - GDAL_INGESTED_BYTES_AT_OPEN=32768
+      - GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR
+      - GDAL_HTTP_MERGE_CONSECUTIVE_RANGES=YES
+      - GDAL_HTTP_MULTIPLEX=YES
+        #- GDAL_HTTP_VERSION=2
+      - PYTHONWARNINGS=ignore
+      - VSI_CACHE=TRUE
+      - VSI_CACHE_SIZE=536870912
     neworks:
       - ingress
       - public
