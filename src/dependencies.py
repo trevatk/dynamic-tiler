@@ -18,6 +18,4 @@ def DatasetPathParams(
     credentials = Security(security),
     current_user: str = Depends(get_current_user)
 ):
-    if credentials.username is None or credentials.password is None:
-        raise HTTPException(status_code=403, detail='no credentials provided')
     return url

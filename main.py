@@ -12,6 +12,19 @@ from src.dependencies import DatasetPathParams
 
 app = FastAPI()
 
+origins = [
+    "http://*",
+    "https://*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 protected_router = TilerFactory(path_dependency=DatasetPathParams, extensions=[
     wmsExtension()
 ])
@@ -28,16 +41,3 @@ add_exception_handlers(app, DEFAULT_STATUS_CODES)
 @app.get("/health", description="Health Check", tags=["Health Check"])
 def ping():
     return {"ping": "pong"}
-
-origins = [
-    "http://*",
-    "https://*"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
