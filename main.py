@@ -13,6 +13,20 @@ from src.extensions import wmsExtension as authenticatedWmsExtension
 
 app = FastAPI()
 
+origins = [
+    "http://*",
+    "https://*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+
+)
+
 protected_router = TilerFactory(path_dependency=DatasetPathParams, extensions=[
     authenticatedWmsExtension()
 ])
@@ -29,3 +43,6 @@ add_exception_handlers(app, DEFAULT_STATUS_CODES)
 @app.get("/health", description="Health Check", tags=["Health Check"])
 def ping():
     return {"ping": "pong"}
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8000)
