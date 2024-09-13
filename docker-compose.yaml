@@ -6,7 +6,7 @@ services:
   titiler:
     image: titiler:latest
     container_name: titiler
-    restart: 'yes'
+    restart: 'always'
     labels:
       - traefik.enable=true
       - traefik.http.routers.titiler.rule=Host(`titiler.structx.io`)

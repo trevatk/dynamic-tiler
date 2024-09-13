@@ -10,6 +10,7 @@ from titiler.core.errors import DEFAULT_STATUS_CODES, add_exception_handlers
 
 from src.dependencies import DatasetPathParams
 from src.extensions import wmsExtension as authenticatedWmsExtension
+from src.routes import router
 
 app = FastAPI()
 
@@ -24,7 +25,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-
 )
 
 protected_router = TilerFactory(path_dependency=DatasetPathParams, extensions=[
@@ -37,6 +37,7 @@ unprotected_router = TilerFactory(extensions=[
 
 app.include_router(protected_router.router, prefix='/protected')
 app.include_router(unprotected_router.router)
+app.include_router(router)
 
 add_exception_handlers(app, DEFAULT_STATUS_CODES)
 
@@ -45,4 +46,4 @@ def ping():
     return {"ping": "pong"}
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='localhost', port=4000)
