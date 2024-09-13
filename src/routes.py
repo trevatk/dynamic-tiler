@@ -53,23 +53,24 @@ def rescale_array(
 
     return array.astype(out_dtype)
 
-@router.get("/{tileMatrixSetId}/{z}/{x}/{y}")
+@router.get("/{tileMatrixSetId}/{z}/{x}/{y}.{format}")
 def tile(
     z: int,
     x: int,
     y: int,
+    format: str,
     tileMatrixSetId: str
 ):
     tms = supported_tms.get(tileMatrixSetId)
     with COGReader("cog/sf.tif", tms=tms) as src:
-        tile = src.tile(x, y, z, indexes=range(1, 2, 3))
+        tile = src.tile(x, y, z, indexes=range(1, 2))
         data, mask = tile.data.copy(), tile.mask.copy()
         datatype_range = tile.dataset_statistics or (dtype_ranges[str(data.dtype)],)
         output_format = ImageType.png
         if output_format == ImageType.png and data.dtype not in ["uint8", "uint16"]:
             data = rescale_array(data, mask, in_range=datatype_range)
         image = render(data, mask, output_format=output_format.driver)
-        return Response(status_code=200, content=image, media_type=output_format.mediatype)
+        return Response(status_code=200, content=image, media_type=output_format.driver)
 
 
 
