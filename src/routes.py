@@ -1,7 +1,8 @@
 
-from typing import Optional, Sequence, Union
+from typing import Optional, Sequence, Union, Annotated
 
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 import numpy
 from rio_tiler.types import ColorMapType, IntervalTuple
@@ -15,6 +16,8 @@ from titiler.core.resources.enums import ImageType
 
 from morecantile import tms as morecantile_tms
 from morecantile.defaults import TileMatrixSets
+
+from src.dependencies import get_current_user
 
 router = APIRouter(
     prefix='/xyz',
@@ -53,13 +56,16 @@ def rescale_array(
 
     return array.astype(out_dtype)
 
+security = HTTPBasic()
+
 @router.get("/{tileMatrixSetId}/{z}/{x}/{y}.{format}")
 def tile(
     z: int,
     x: int,
     y: int,
     format: str,
-    tileMatrixSetId: str
+    tileMatrixSetId: str,
+    current_user = Depends(get_current_user),
 ):
     tms = supported_tms.get(tileMatrixSetId)
     with COGReader("cog/sf.tif", tms=tms) as src:
